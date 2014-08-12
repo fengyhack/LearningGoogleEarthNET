@@ -15,13 +15,12 @@ namespace GEDemo4
         private IntPtr GEHMainWnd = (IntPtr)0;
         private IntPtr GEHRenderWnd = (IntPtr)0;
 
-        private ApplicationGE GEApp;
-        private bool isGEStarted;
+        private ApplicationGE GEApp = null;
+        private bool isGEStarted=false;
 
         public GEDemo4()
         {
             InitializeComponent();
-            isGEStarted = false;
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -40,32 +39,43 @@ namespace GEDemo4
             ResizeGERenderWindow(tabGEViewer);
         }
 
-        #region GEOperations
+        #region GEFunctions
 
+        /// <summary>
+        /// 功能:尝试启动Google Earth实例
+        /// </summary>
+        /// <param>
+        /// 参数:parentDocker
+        /// 含义:GE渲染窗口所停靠的父窗口
+        /// </param>
         private void TryStartGE(Control parentDocker)
         {
-                try
-                {
-                    GEApp = new ApplicationGE();
-
-                    GEHMainWnd = (IntPtr)GEApp.GetMainHwnd();
-                    //隐藏GoogleEarth主窗口
-                    NativeMethods.SetWindowPos(GEHMainWnd, NativeMethods.HWND_BOTTOM,
-                        0, 0, 0, 0, NativeMethods.SWP_NOSIZE | NativeMethods.SWP_HIDEWINDOW);
-
-                    GEHRenderWnd = (IntPtr)GEApp.GetRenderHwnd();
-                    //将渲染窗口嵌入到父窗体
-                    NativeMethods.MoveWindow(GEHRenderWnd, 0, 0, parentDocker.Width, parentDocker.Height, true);
-                    NativeMethods.SetParent(GEHRenderWnd, parentDocker.Handle);
-
-                    isGEStarted = true;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Error Starting GE");
-                }
+            try
+            {
+                //创建GE新实例
+                GEApp = new ApplicationGE();
+                //取得GE主窗口句柄
+                GEHMainWnd = (IntPtr)GEApp.GetMainHwnd();
+                //隐藏GoogleEarth主窗口
+                NativeMethods.SetWindowPos(GEHMainWnd, NativeMethods.HWND_BOTTOM,
+                    0, 0, 0, 0, NativeMethods.SWP_NOSIZE | NativeMethods.SWP_HIDEWINDOW);
+                //取得GE的影像窗口(渲染窗口)句柄
+                GEHRenderWnd = (IntPtr)GEApp.GetRenderHwnd();
+                //将渲染窗口嵌入到父窗体
+                NativeMethods.MoveWindow(GEHRenderWnd, 0, 0, parentDocker.Width, parentDocker.Height, true);
+                NativeMethods.SetParent(GEHRenderWnd, parentDocker.Handle);
+                //启动成功,设置标记
+                isGEStarted = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error Starting GE");
+            }
         }
 
+        /// <summary>
+        /// 功能:尝试关闭GE
+        /// </summary>
         private void TryCloseGE()
         {
             try
@@ -82,12 +92,18 @@ namespace GEDemo4
                 GEHRenderWnd = (IntPtr)0;
                 isGEStarted = false;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error Shutdown GE");
             }
         }
-
+        
+        /// <summary>
+        /// 功能:重设GE渲染窗口的尺寸
+        /// <param>
+        /// 参数:parentDocker
+        /// 含义:GE渲染窗口所停靠的父窗口
+        /// </param>
         private void ResizeGERenderWindow(Control parentDocker)
         {
             if (!isGEStarted)
@@ -98,8 +114,9 @@ namespace GEDemo4
             //
         }
 
-        #endregion GEOperations
-        
+        #endregion GEFunctions
+
+        #region MessageHandlers
 
         private void btnStartGE_Click(object sender, EventArgs e)
         {
@@ -191,10 +208,12 @@ namespace GEDemo4
             }
         }
 
+        #endregion MessageHandlers
+
         private bool CheckGEState(bool bExpRun, string caption)
         {
             bool state = true;
-            if(bExpRun)
+            if (bExpRun)
             {
                 //期望GE运行而实际并未运行
                 if (!isGEStarted)
@@ -206,7 +225,7 @@ namespace GEDemo4
             else
             {
                 //期望GE关闭而实际正在运行
-                if(isGEStarted)
+                if (isGEStarted)
                 {
                     MessageBox.Show("Goolge Earth is running currently", caption);
                     state = false;
