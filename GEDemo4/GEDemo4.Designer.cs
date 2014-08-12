@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GEDemo4));
             this.mainPanel = new System.Windows.Forms.Panel();
             this.tabDocker = new System.Windows.Forms.TabControl();
@@ -43,6 +44,7 @@
             this.btnGESnap = new System.Windows.Forms.ToolStripMenuItem();
             this.btnAPISnap = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.msgBar = new System.Windows.Forms.ToolTip(this.components);
             this.mainPanel.SuspendLayout();
             this.tabDocker.SuspendLayout();
             this.toolBar.SuspendLayout();
@@ -153,14 +155,16 @@
             // btnGESnap
             // 
             this.btnGESnap.Name = "btnGESnap";
-            this.btnGESnap.Size = new System.Drawing.Size(132, 24);
+            this.btnGESnap.Size = new System.Drawing.Size(175, 24);
             this.btnGESnap.Text = "GE截图";
+            this.btnGESnap.Click += new System.EventHandler(this.btnGESnap_Click);
             // 
             // btnAPISnap
             // 
             this.btnAPISnap.Name = "btnAPISnap";
-            this.btnAPISnap.Size = new System.Drawing.Size(132, 24);
+            this.btnAPISnap.Size = new System.Drawing.Size(175, 24);
             this.btnAPISnap.Text = "API截图";
+            this.btnAPISnap.Click += new System.EventHandler(this.btnAPISnap_Click);
             // 
             // toolStripSeparator2
             // 
@@ -202,6 +206,7 @@
         private System.Windows.Forms.TabControl tabDocker;
         private System.Windows.Forms.TabPage tabGEViewer;
         private System.Windows.Forms.TabPage tabXPViewer;
+        private System.Windows.Forms.ToolTip msgBar;
     }
 }
 

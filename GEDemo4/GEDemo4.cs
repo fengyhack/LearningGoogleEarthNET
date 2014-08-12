@@ -29,7 +29,7 @@ namespace GEDemo4
             base.OnClosing(e);
             if (isGEStarted)
             {
-                ShutDownGE();
+                TryCloseGE();
             }
         }
 
@@ -44,11 +44,6 @@ namespace GEDemo4
 
         private void TryStartGE(Control parentDocker)
         {
-            if (isGEStarted)
-            {
-                MessageBox.Show("Google Earth is running currently", "Warning");
-                return;
-            }
                 try
                 {
                     GEApp = new ApplicationGE();
@@ -71,14 +66,8 @@ namespace GEDemo4
                 }
         }
 
-        private void ShutDownGE()
+        private void TryCloseGE()
         {
-            if (!isGEStarted)
-            {
-                MessageBox.Show("Google Earth is not running currently", "Warning");
-                return;
-            }
-
             try
             {
                 //杀掉GoogleEarth进程
@@ -114,12 +103,117 @@ namespace GEDemo4
 
         private void btnStartGE_Click(object sender, EventArgs e)
         {
-            TryStartGE(tabGEViewer);
+            if (CheckGEState(false, "Startup Google Earth"))
+            {
+                TryStartGE(tabGEViewer);
+            }
         }
 
         private void btnStopGE_Click(object sender, EventArgs e)
         {
-            ShutDownGE();
+            if (CheckGEState(true, "Shutdown Google Earth"))
+            {
+                TryCloseGE();
+            }
+        }
+
+        private void btnGESnap_Click(object sender, EventArgs e)
+        {
+            if (CheckGEState(true, "GESnap"))
+            {
+                using (SaveFileDialog sfd = new SaveFileDialog())
+                {
+                    sfd.Filter = "JPEG图片(*.jpg)|*.jpg";
+                    sfd.AddExtension = true;
+                    sfd.CheckPathExists = true;
+                    sfd.Title = "保存Google Earth截图";
+
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                        GEApp.SaveScreenShot(sfd.FileName, 100);
+                        msgBar.Show("\'" + sfd.FileName + "\' Saved", tabGEViewer, tabGEViewer.Width / 4, tabGEViewer.Height / 4, 2000);
+                    }
+                }
+            }
+        }
+
+        private void btnAPISnap_Click(object sender, EventArgs e)
+        {
+            if (CheckGEState(true, "APISnap"))
+            {
+
+                RECT rect = new RECT();
+                NativeMethods.GetClientRect(GEHRenderWnd, out rect);
+
+                // 取得Render DC
+                IntPtr hRenderDC = NativeMethods.GetWindowDC(GEHRenderWnd);
+                // 创建hBitmap
+                IntPtr hBitmap = NativeMethods.CreateCompatibleBitmap(hRenderDC, rect.Width, rect.Height);
+                // 创建MEM DC
+                IntPtr hMemDC = NativeMethods.CreateCompatibleDC(hRenderDC);
+                // 将Bitmap Select到MemDC
+                NativeMethods.SelectObject(hMemDC, hBitmap);
+                // 直接拷屏
+                NativeMethods.BitBlt(hMemDC, 0, 0, rect.Width, rect.Height,
+                    hRenderDC, 0, 0, 13369376);
+
+                using (Bitmap bmp = Bitmap.FromHbitmap(hBitmap))
+                {
+                    using (SaveFileDialog sfd = new SaveFileDialog())
+                    {
+                        sfd.Filter = "JPEG图片(*.jpg)|*.jpg|PNG图片(*.png)|*.png";
+                        sfd.AddExtension = true;
+                        sfd.CheckPathExists = true;
+                        sfd.Title = "保存Google Earth截图";
+
+                        if (sfd.ShowDialog() == DialogResult.OK)
+                        {
+                            ImageFormat imgFormat = null;
+                            // 默认选择JPG
+                            if (sfd.FilterIndex == 0)
+                            {
+                                imgFormat = ImageFormat.Jpeg;
+                            }
+                            // 选择PNG
+                            else
+                            {
+                                imgFormat = ImageFormat.Png;
+                            }
+                            bmp.Save(sfd.FileName, imgFormat);
+                            msgBar.Show("\'" + sfd.FileName + "\' Saved", tabGEViewer, tabGEViewer.Width / 4, tabGEViewer.Height / 4, 2000);
+                        }
+                    }
+
+                    //销毁资源
+                    NativeMethods.DeleteDC(hRenderDC);
+                    NativeMethods.DeleteDC(hMemDC);
+                }
+            }
+        }
+
+        private bool CheckGEState(bool bExpRun, string caption)
+        {
+            bool state = true;
+            if(bExpRun)
+            {
+                //期望GE运行而实际并未运行
+                if (!isGEStarted)
+                {
+                    MessageBox.Show("Goolge Earth is not running", caption);
+                    state = false;
+                }
+            }
+            else
+            {
+                //期望GE关闭而实际正在运行
+                if(isGEStarted)
+                {
+                    MessageBox.Show("Goolge Earth is running currently", caption);
+                    state = false;
+                }
+            }
+
+            return state;
         }
 
     }
