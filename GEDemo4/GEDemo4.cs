@@ -5,6 +5,7 @@ using EARTHLib;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Diagnostics;
+using System.Drawing.Drawing2D;
 
 
 namespace GEDemo4
@@ -16,7 +17,7 @@ namespace GEDemo4
         private IntPtr GEHRenderWnd = (IntPtr)0;
 
         private ApplicationGE GEApp = null;
-        private bool isGEStarted=false;
+        private bool isGEStarted = false;
 
         public GEDemo4()
         {
@@ -36,7 +37,10 @@ namespace GEDemo4
         {
             base.OnSizeChanged(e);
 
-            ResizeGERenderWindow(tabGEViewer);
+            if (isGEStarted)
+            {
+                ResizeTabPage(tabGEViewer);
+            }
         }
 
         #region GEFunctions
@@ -61,9 +65,8 @@ namespace GEDemo4
                     0, 0, 0, 0, NativeMethods.SWP_NOSIZE | NativeMethods.SWP_HIDEWINDOW);
                 //取得GE的影像窗口(渲染窗口)句柄
                 GEHRenderWnd = (IntPtr)GEApp.GetRenderHwnd();
-                //将渲染窗口嵌入到父窗体
-                NativeMethods.MoveWindow(GEHRenderWnd, 0, 0, parentDocker.Width, parentDocker.Height, true);
-                NativeMethods.SetParent(GEHRenderWnd, parentDocker.Handle);
+                //调整视图窗口尺寸
+                ResizeTabPage(tabGEViewer);
                 //启动成功,设置标记
                 isGEStarted = true;
             }
@@ -97,21 +100,26 @@ namespace GEDemo4
                 MessageBox.Show(ex.Message, "Error Shutdown GE");
             }
         }
-        
+
         /// <summary>
         /// 功能:重设GE渲染窗口的尺寸
         /// <param>
         /// 参数:parentDocker
         /// 含义:GE渲染窗口所停靠的父窗口
         /// </param>
-        private void ResizeGERenderWindow(Control parentDocker)
+        private void ResizeTabPage(TabPage parentDocker)
         {
-            if (!isGEStarted)
-            {
-                return;
-            }
+            RECT rect = new RECT();
+            NativeMethods.GetClientRect(GEHRenderWnd, out rect);
 
-            //
+            int left = (parentDocker.Width - rect.Width) / 2;
+            int top = (parentDocker.Height - rect.Height) / 2;
+            if (left < 0) left = 0;
+            if (top < 0) top = 0;
+            parentDocker.AutoScrollMinSize = new Size(rect.Width, rect.Height);
+            //将渲染窗口嵌入到父窗体合适位置
+            NativeMethods.MoveWindow(GEHRenderWnd, left, top, rect.Width, rect.Height, true);
+            NativeMethods.SetParent(GEHRenderWnd, parentDocker.Handle);
         }
 
         #endregion GEFunctions
@@ -123,6 +131,7 @@ namespace GEDemo4
             if (CheckGEState(false, "Startup Google Earth"))
             {
                 TryStartGE(tabGEViewer);
+                ResizeTabPage(tabGEViewer);
             }
         }
 
@@ -158,7 +167,6 @@ namespace GEDemo4
         {
             if (CheckGEState(true, "APISnap"))
             {
-
                 RECT rect = new RECT();
                 NativeMethods.GetClientRect(GEHRenderWnd, out rect);
 
@@ -171,8 +179,9 @@ namespace GEDemo4
                 // 将Bitmap Select到MemDC
                 NativeMethods.SelectObject(hMemDC, hBitmap);
                 // 直接拷屏
-                NativeMethods.BitBlt(hMemDC, 0, 0, rect.Width, rect.Height,
-                    hRenderDC, 0, 0, 13369376);
+                NativeMethods.BitBlt(hMemDC, rect.left, rect.top, rect.Width, rect.Height, hRenderDC, 0, 0, NativeMethods.SRCCOPY);
+
+                #region SaveImage
 
                 using (Bitmap bmp = Bitmap.FromHbitmap(hBitmap))
                 {
@@ -200,12 +209,14 @@ namespace GEDemo4
                             msgBar.Show("\'" + sfd.FileName + "\' Saved", tabGEViewer, tabGEViewer.Width / 4, tabGEViewer.Height / 4, 2000);
                         }
                     }
-
                     //销毁资源
                     NativeMethods.DeleteDC(hRenderDC);
                     NativeMethods.DeleteDC(hMemDC);
                 }
+
+                #endregion SaveImage
             }
+
         }
 
         #endregion MessageHandlers

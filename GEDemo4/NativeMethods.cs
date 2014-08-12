@@ -75,6 +75,7 @@ namespace GEDemo4
         public static readonly int WM_QT_PAINT = 0xC2DC;
         public static readonly int WM_PAINT = 0x000F;
         public static readonly int WM_SIZE = 0x0005;
+        public static readonly int SRCCOPY = 0xCC0020;
 
         #endregion
 
