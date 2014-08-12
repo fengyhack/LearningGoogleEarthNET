@@ -65,10 +65,10 @@
             this.tabDocker.Controls.Add(this.tabGEViewer);
             this.tabDocker.Controls.Add(this.tabXPViewer);
             this.tabDocker.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabDocker.Location = new System.Drawing.Point(0, 27);
+            this.tabDocker.Location = new System.Drawing.Point(0, 30);
             this.tabDocker.Name = "tabDocker";
             this.tabDocker.SelectedIndex = 0;
-            this.tabDocker.Size = new System.Drawing.Size(1182, 828);
+            this.tabDocker.Size = new System.Drawing.Size(1182, 825);
             this.tabDocker.TabIndex = 1;
             // 
             // tabGEViewer
@@ -77,7 +77,7 @@
             this.tabGEViewer.Location = new System.Drawing.Point(4, 32);
             this.tabGEViewer.Name = "tabGEViewer";
             this.tabGEViewer.Padding = new System.Windows.Forms.Padding(3);
-            this.tabGEViewer.Size = new System.Drawing.Size(1174, 792);
+            this.tabGEViewer.Size = new System.Drawing.Size(1174, 789);
             this.tabGEViewer.TabIndex = 0;
             this.tabGEViewer.Text = "GEViewer";
             // 
@@ -87,12 +87,13 @@
             this.tabXPViewer.Location = new System.Drawing.Point(4, 32);
             this.tabXPViewer.Name = "tabXPViewer";
             this.tabXPViewer.Padding = new System.Windows.Forms.Padding(3);
-            this.tabXPViewer.Size = new System.Drawing.Size(1174, 792);
+            this.tabXPViewer.Size = new System.Drawing.Size(1174, 789);
             this.tabXPViewer.TabIndex = 1;
             this.tabXPViewer.Text = "XPViewer";
             // 
             // toolBar
             // 
+            this.toolBar.Font = new System.Drawing.Font("Cambria", 12F);
             this.toolBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnAppx,
             this.toolStripSeparator1,
@@ -100,7 +101,7 @@
             this.toolStripSeparator2});
             this.toolBar.Location = new System.Drawing.Point(0, 0);
             this.toolBar.Name = "toolBar";
-            this.toolBar.Size = new System.Drawing.Size(1182, 27);
+            this.toolBar.Size = new System.Drawing.Size(1182, 30);
             this.toolBar.TabIndex = 0;
             this.toolBar.Text = "toolStrip1";
             // 
@@ -113,33 +114,33 @@
             this.btnAppx.Image = ((System.Drawing.Image)(resources.GetObject("btnAppx.Image")));
             this.btnAppx.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnAppx.Name = "btnAppx";
-            this.btnAppx.Size = new System.Drawing.Size(68, 24);
+            this.btnAppx.Size = new System.Drawing.Size(79, 27);
             this.btnAppx.Text = "开始";
             // 
             // btnStartGE
             // 
             this.btnStartGE.Name = "btnStartGE";
-            this.btnStartGE.Size = new System.Drawing.Size(175, 24);
+            this.btnStartGE.Size = new System.Drawing.Size(164, 28);
             this.btnStartGE.Text = "启动GE";
             this.btnStartGE.Click += new System.EventHandler(this.btnStartGE_Click);
             // 
             // btnStopGE
             // 
             this.btnStopGE.Name = "btnStopGE";
-            this.btnStopGE.Size = new System.Drawing.Size(175, 24);
+            this.btnStopGE.Size = new System.Drawing.Size(164, 28);
             this.btnStopGE.Text = "关闭GE";
             this.btnStopGE.Click += new System.EventHandler(this.btnStopGE_Click);
             // 
             // btnExitApp
             // 
             this.btnExitApp.Name = "btnExitApp";
-            this.btnExitApp.Size = new System.Drawing.Size(175, 24);
+            this.btnExitApp.Size = new System.Drawing.Size(164, 28);
             this.btnExitApp.Text = "退出程序";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 30);
             // 
             // btnSnap
             // 
@@ -149,27 +150,27 @@
             this.btnSnap.Image = ((System.Drawing.Image)(resources.GetObject("btnSnap.Image")));
             this.btnSnap.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSnap.Name = "btnSnap";
-            this.btnSnap.Size = new System.Drawing.Size(68, 24);
+            this.btnSnap.Size = new System.Drawing.Size(79, 27);
             this.btnSnap.Text = "截图";
             // 
             // btnGESnap
             // 
             this.btnGESnap.Name = "btnGESnap";
-            this.btnGESnap.Size = new System.Drawing.Size(175, 24);
+            this.btnGESnap.Size = new System.Drawing.Size(153, 28);
             this.btnGESnap.Text = "GE截图";
             this.btnGESnap.Click += new System.EventHandler(this.btnGESnap_Click);
             // 
             // btnAPISnap
             // 
             this.btnAPISnap.Name = "btnAPISnap";
-            this.btnAPISnap.Size = new System.Drawing.Size(175, 24);
+            this.btnAPISnap.Size = new System.Drawing.Size(153, 28);
             this.btnAPISnap.Text = "API截图";
             this.btnAPISnap.Click += new System.EventHandler(this.btnAPISnap_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 30);
             // 
             // GEDemo4
             // 
@@ -178,6 +179,7 @@
             this.ClientSize = new System.Drawing.Size(1182, 855);
             this.Controls.Add(this.mainPanel);
             this.Font = new System.Drawing.Font("Cambria", 12F);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "GEDemo4";
             this.Text = "GEDemo4";

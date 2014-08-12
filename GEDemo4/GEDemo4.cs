@@ -12,7 +12,6 @@ namespace GEDemo4
 {
     public partial class GEDemo4 : Form
     {
-        static readonly Int32 WM_QUIT = 0x0012;
         private IntPtr GEHMainWnd = (IntPtr)0;
         private IntPtr GEHRenderWnd = (IntPtr)0;
 
@@ -22,6 +21,7 @@ namespace GEDemo4
         public GEDemo4()
         {
             InitializeComponent();
+            SetBackgroundImage(tabGEViewer);
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -130,6 +130,7 @@ namespace GEDemo4
         {
             if (CheckGEState(false, "Startup Google Earth"))
             {
+                SetBackgroundImage(tabGEViewer, true);
                 TryStartGE(tabGEViewer);
                 ResizeTabPage(tabGEViewer);
             }
@@ -139,6 +140,7 @@ namespace GEDemo4
         {
             if (CheckGEState(true, "Shutdown Google Earth"))
             {
+                SetBackgroundImage(tabGEViewer);
                 TryCloseGE();
             }
         }
@@ -244,6 +246,19 @@ namespace GEDemo4
             }
 
             return state;
+        }
+
+        private void SetBackgroundImage(Control control, bool reset=false)
+        {
+            if (reset)
+            {
+                control.BackgroundImage = null;
+            }
+            else
+            {
+                control.BackgroundImage = Properties.Resources.GEBgnd;
+                control.BackgroundImageLayout = ImageLayout.Stretch;
+            }
         }
 
     }
