@@ -248,6 +248,7 @@ namespace GEDemo4
             return state;
         }
 
+        //reset=true表示清除背景图片
         private void SetBackgroundImage(Control control, bool reset=false)
         {
             if (reset)
@@ -260,6 +261,5 @@ namespace GEDemo4
                 control.BackgroundImageLayout = ImageLayout.Stretch;
             }
         }
-
     }
 }
