@@ -5,42 +5,42 @@ using EARTHLib;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Diagnostics;
-using System.Drawing.Drawing2D;
 
 
-namespace GEDemo4
+namespace GEDemo5
 {
-    public partial class GEDemo4 : Form
+    public struct SCamParams
     {
+        public double dLat;
+        public double dLon;
+        public double dAlt;
+        public double dRng;
+        public double dAng;
+        public double dAzm;
+        public double dSpd;
+    }
+    public partial class GEDemo5 : Form
+    {
+        #region PrivateMembers
+
         private IntPtr GEHMainWnd = (IntPtr)0;
         private IntPtr GEHRenderWnd = (IntPtr)0;
 
         private ApplicationGE GEApp = null;
         private bool isGEStarted = false;
 
-        public GEDemo4()
+        SCamParams scp = new SCamParams();
+
+        #endregion PrivateMembers
+
+        public GEDemo5()
         {
             InitializeComponent();
+            WindowState = FormWindowState.Maximized; //最大化显示
+            tabDocker.TabPages.Clear();
+            tabDocker.TabPages.Add(tabGEViewer);
             SetBackgroundImage(tabGEViewer);
-        }
-
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            base.OnClosing(e);
-            if (isGEStarted)
-            {
-                TryCloseGE();
-            }
-        }
-
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-
-            if (isGEStarted)
-            {
-                ResizeTabPage(tabGEViewer);
-            }
+            SetParamsDefault();
         }
 
         #region GEFunctions
@@ -126,13 +126,32 @@ namespace GEDemo4
 
         #region MessageHandlers
 
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            if (isGEStarted)
+            {
+                TryCloseGE();
+            }
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+
+            if (isGEStarted)
+            {
+                ResizeTabPage(tabGEViewer);
+            }
+        }
+
         private void btnStartGE_Click(object sender, EventArgs e)
         {
             if (CheckGEState(false, "Startup Google Earth"))
             {
                 SetBackgroundImage(tabGEViewer, true);
                 TryStartGE(tabGEViewer);
-                ResizeTabPage(tabGEViewer);
+                ResizeTabPage(tabGEViewer);     
             }
         }
 
@@ -143,6 +162,19 @@ namespace GEDemo4
                 SetBackgroundImage(tabGEViewer);
                 TryCloseGE();
             }
+        }
+
+        private void btnExitApp_Click(object sender, EventArgs e)
+        {
+            if (DialogResult.OK != MessageBox.Show("Are you sure to exit?", "Exit Confirm", MessageBoxButtons.OKCancel))
+            {
+                return;
+            }
+            if (isGEStarted)
+            {
+                TryCloseGE();
+            }
+            Application.Exit();
         }
 
         private void btnGESnap_Click(object sender, EventArgs e)
@@ -221,7 +253,34 @@ namespace GEDemo4
 
         }
 
+        private void btnParamsSettings_Click(object sender, EventArgs e)
+        {
+            if (CheckGEState(true, "Setting Camera Parameters"))
+            {
+                tabDocker.TabPages.Add(tabXPViewer);
+                tabDocker.SelectTab(tabXPViewer);
+            }
+        }
+
+        private void btnOKCamParams_Click(object sender, EventArgs e)
+        {
+            GetParamsValue();
+            if (CheckInputParams())
+            {
+                GEApp.SetCameraParams(scp.dLat, scp.dLon, scp.dAlt,
+                    AltitudeModeGE.AbsoluteAltitudeGE,
+                    scp.dRng, scp.dAng, scp.dAzm, scp.dSpd);
+                tabDocker.TabPages.Remove(tabXPViewer);
+            }
+            else
+            {
+                MessageBox.Show("Invalid Parameters!");
+            }
+        }
+
         #endregion MessageHandlers
+
+        #region AuxFunctions
 
         private bool CheckGEState(bool bExpRun, string caption)
         {
@@ -249,7 +308,7 @@ namespace GEDemo4
         }
 
         //reset=true表示清除背景图片
-        private void SetBackgroundImage(Control control, bool reset=false)
+        private void SetBackgroundImage(Control control, bool reset = false)
         {
             if (reset)
             {
@@ -261,5 +320,125 @@ namespace GEDemo4
                 control.BackgroundImageLayout = ImageLayout.Stretch;
             }
         }
+
+        private void GetParamsValue()
+        {
+            scp.dLat = TranslateLatLon(txtBoxLat.Text);
+            scp.dLon = TranslateLatLon(txtBoxLon.Text);
+            scp.dAlt = double.Parse(txtBoxAlt.Text);
+            scp.dRng = double.Parse(txtBoxRng.Text);
+            scp.dAng = double.Parse(txtBoxAng.Text);
+            scp.dAzm = double.Parse(txtBoxAzm.Text);
+            scp.dSpd = double.Parse(txtBoxSpd.Text);
+        }
+
+        private void SetParamsDefault()
+        {
+            // 上海外滩,东方明珠塔
+            // (31°14'30''N 121°29'43''E)
+            // (31.24167°N 121.4953°E)
+
+            txtBoxLat.Text = "31°14'30''N";
+            txtBoxLon.Text = "121°29'43''E";
+            txtBoxAlt.Text = "0";
+            txtBoxRng.Text = "2000";
+            txtBoxAng.Text = "0";
+            txtBoxAzm.Text = "0";
+            txtBoxSpd.Text = "3";
+
+            scp.dLat = 31.24167;
+            scp.dLon = 121.4953;
+            scp.dAlt = 0;
+            scp.dRng = 2000;
+            scp.dAng = 0;
+            scp.dAzm = 0;
+            scp.dSpd = 3;   
+        }
+
+        private bool CheckInputParams()
+        {
+            return (scp.dLat >= -90 && scp.dLat <= 90)&&
+                (scp.dLon >= -180 && scp.dLon <= 180)&&
+                (scp.dAlt >= 0) && (scp.dRng>0)&& 
+                (scp.dAng >= 0)&& (scp.dSpd > 0);
+        }
+
+        public double TranslateLatLon(string slatlon)
+        {
+            double ddeg = 0.0;
+            double dmin = 0.0;
+            double dsec = 0.0;
+            int start=0,pos=0;
+            #region VAL
+            pos = slatlon.IndexOf('°',start);
+            if (pos > 0)
+            {
+                #region ddeg
+                while (start<pos)
+                {
+                    if (slatlon[start] == '0') ++start;
+                    else break;
+                }
+                if (start < pos-1)
+                {
+                    ddeg = double.Parse(slatlon.Substring(start, pos-start));
+                }
+                #endregion ddeg
+
+                start = pos + 1;
+                pos = slatlon.IndexOf('\'', start);
+                if (pos > 0)
+                {
+                    #region dmin
+                    while (start < pos)
+                    {
+                        if (slatlon[start] == '0') ++start;
+                        else break;
+                    }
+                    if (start < pos-1)
+                    {
+                        dmin = double.Parse(slatlon.Substring(start, pos - start));
+                    }
+                    #endregion dmin
+
+                    start = pos + 1;
+                    pos = slatlon.IndexOf('\'', start);
+                    if (pos > 0)
+                    {
+                        #region dsec
+                        while (start < pos)
+                        {
+                            if (slatlon[start] == '0') ++start;
+                            else break;
+                        }
+                        if (start < pos-1)
+                        {
+                            dsec = double.Parse(slatlon.Substring(start, pos - start));
+                        }
+                        #endregion dsec
+                    } //if(pos,dsec)
+                } //if(pos,dmin)
+                #region SGN
+                pos =slatlon.LastIndexOf('\'')+ 1;
+                if (slatlon[pos] == 'S'||slatlon[pos]=='W')
+                {
+                    ddeg = -ddeg;
+                    dmin = -dmin;
+                    dsec = -dsec;
+                } //if(pos,len-1)
+                #endregion SGN
+            } //if(pos ddeg)
+            else
+            {
+                ddeg = double.Parse(slatlon);
+            }
+            #endregion VAL
+
+            return (ddeg + dmin / 60.0 + dsec / 3600.0);
+        }
+
+        #endregion AuxFunctions
+
     }
+
 }

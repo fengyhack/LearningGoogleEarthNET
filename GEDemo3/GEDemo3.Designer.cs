@@ -36,10 +36,10 @@
             this.button1 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.setCameraParameters = new System.Windows.Forms.GroupBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.setCameraParameters.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -58,7 +58,7 @@
             this.tabPage1.AutoScroll = true;
             this.tabPage1.AutoScrollMinSize = new System.Drawing.Size(1000, 750);
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage1.Controls.Add(this.groupBox1);
+            this.tabPage1.Controls.Add(this.setCameraParameters);
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -106,17 +106,17 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Snapshot";
             // 
-            // groupBox1
+            // setCameraParameters
             // 
-            this.groupBox1.Controls.Add(this.button1);
-            this.groupBox1.Controls.Add(this.button3);
-            this.groupBox1.Controls.Add(this.button2);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupBox1.Location = new System.Drawing.Point(3, 791);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1185, 68);
-            this.groupBox1.TabIndex = 3;
-            this.groupBox1.TabStop = false;
+            this.setCameraParameters.Controls.Add(this.button1);
+            this.setCameraParameters.Controls.Add(this.button3);
+            this.setCameraParameters.Controls.Add(this.button2);
+            this.setCameraParameters.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.setCameraParameters.Location = new System.Drawing.Point(3, 791);
+            this.setCameraParameters.Name = "setCameraParameters";
+            this.setCameraParameters.Size = new System.Drawing.Size(1185, 68);
+            this.setCameraParameters.TabIndex = 3;
+            this.setCameraParameters.TabStop = false;
             // 
             // GEDemo3
             // 
@@ -128,7 +128,7 @@
             this.Text = "GEDemo3";
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
+            this.setCameraParameters.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -142,7 +142,7 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox setCameraParameters;
     }
 }
 

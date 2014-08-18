@@ -44,7 +44,7 @@
             this.btnGESnap = new System.Windows.Forms.ToolStripMenuItem();
             this.btnAPISnap = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.msgBar = new System.Windows.Forms.ToolTip(this.components);
+            this.msgToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.mainPanel.SuspendLayout();
             this.tabDocker.SuspendLayout();
             this.toolBar.SuspendLayout();
@@ -208,7 +208,7 @@
         private System.Windows.Forms.TabControl tabDocker;
         private System.Windows.Forms.TabPage tabGEViewer;
         private System.Windows.Forms.TabPage tabXPViewer;
-        private System.Windows.Forms.ToolTip msgBar;
+        private System.Windows.Forms.ToolTip msgToolTip;
     }
 }
 
